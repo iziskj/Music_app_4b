@@ -1,5 +1,6 @@
 package com.example.music_app
 
+import android.R
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -61,5 +62,29 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         //Regresar el valor obtenido de la inserción (Verdadero o falso)
         return resultado != -1L
 
+    }
+
+    //MÉTODO PARA INICIAR SESIÓN (CONSULTA) 13/ 10 / 2026 Martes
+    fun iniciarSesion(correo: String, password: String) : Boolean{
+        //Variable que lee la base de datos
+        val db = readableDatabase
+        //Crear consulta
+        val query_sql = """
+            SELECT * FROM $TABLE_USUARIOS
+            WHERE $COL_CORREO = ? AND $COL_PASSWORD = ?
+        """.trimIndent()
+
+        //Crear un cursor que permite recorrer todos los registros
+        val cursor = db.rawQuery(
+            query_sql, arrayOf(correo, password)
+        )
+
+        //Verificar cuantos resultados encuntra el cursor
+        val usuarioEncontrado = cursor.count > 0
+
+        cursor.close()
+        db.close()
+
+        return usuarioEncontrado
     }
 }
